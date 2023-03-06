@@ -1,7 +1,9 @@
 const graphql = require('graphql');
 const UserType = require('./TypeDefs/UserType')
 //For each datatype in your data, you need to import the corresponding graphql equivalent
-const { GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLString, GraphQLList } = graphql
+const { GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLString, GraphQLList, GraphQLFloat, } = graphql
+const graphql_scalars = require('graphql-scalars');
+const {GraphQLCurrency} = graphql_scalars;
 
 //Create connection with PostgresQL DB
 const Pool = require('pg').Pool;
@@ -27,7 +29,7 @@ const RootQuery = new GraphQLObjectType({
                 return data.rows;
             }
         },
-        getUserById: {
+        getUserById: { 
             //This function will return a list of users and this line below is how we define that
             type: UserType,
             args: { id: { type: GraphQLInt } },
@@ -50,15 +52,15 @@ const Mutation = new GraphQLObjectType({
         createUser: {
             type: UserType,
             args: {
-                firstName: { type: GraphQLString },
-                lastName: { type: GraphQLString },
+                name: { type: GraphQLString },
                 email: { type: GraphQLString },
                 password: { type: GraphQLString },
+                current_balance: { type: GraphQLCurrency },
             },
             resolve(parent, args) {
                 pool.query(
-                    `INSERT INTO users (name, email, password) VALUES
-                     (${args.name},${args.email},${args.password})`
+                    `INSERT INTO users (name, email, password, current_balance) VALUES
+                     (${args.name},${args.email},${args.password},${args.current_balance})`
                 )
                 return args;
             }
@@ -67,7 +69,10 @@ const Mutation = new GraphQLObjectType({
 });
 
 //Combination between mutations (Mutating data) and queries (getting data)
-const schema = new GraphQLSchema({ query: RootQuery, mutation: Mutation })
+const schema = new GraphQLSchema({ 
+    query: RootQuery, 
+    mutation: Mutation 
+})
 
 
 module.exports = schema;
