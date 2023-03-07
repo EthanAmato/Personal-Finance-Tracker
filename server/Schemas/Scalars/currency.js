@@ -1,28 +1,43 @@
-const { GraphQLScalarType, Kind } = require("graphql");
-
-const moneyToString =  require("../../utils/money-to-string");
-const stringToMoney = require("../../utils/string-to-money");
+const { GraphQLScalarType, Kind, parse } = require('graphql');
 
 const currencyScalar = new GraphQLScalarType({
-    name: "money",
-    description: "Simple 2-decimal floating point scalar",
-    serialize(value) {
-        //helps us store value into JSON
-        return moneyToString(value);
-    },
-    parseValue(value) {
-        //parse value from JSON
-        console.log("Inside")
-        return stringToMoney(value);
-    },
-    parseLiteral(ast) {
-        //helps us parse HARD-CODED AST STRING
-        if (ast.kind === Kind.STRING) {
-            return stringToMoney(ast.value)
-        }
-        throw new UserInputError('The Provided Data is not formatted correctly.')
-    }, 
-},)
+  name: 'Money',
+  description: 'Custom scalar type for handling money values',
 
+  serialize(value) {
+      if (typeof value !== 'string') {
+          throw new TypeError(`Money cannot represent non-string type ${typeof value}`);
+        }
+    console.log(value)
+    const parsedValue = parseFloat(value.replace(/^\$/, '').replace(/,/, ''));
+    console.log(parsedValue)
+    if (isNaN(parsedValue)) {
+      throw new TypeError(`Money cannot represent non-numeric value: ${value}`);
+    }
+    return parsedValue.toFixed(2);
+  },
+
+  parseValue(value) {
+      if (typeof value !== 'string') {
+          throw new TypeError(`Money cannot represent non-string type ${typeof value}`);
+    }
+    const parsedValue = parseFloat(value.replace(/^\$/, ''));
+    if (isNaN(parsedValue)) {
+      throw new TypeError(`Money cannot represent non-numeric value: ${value}`);
+    }
+    return parsedValue.toFixed(2);
+  },
+
+  parseLiteral(ast) {
+    if (ast.kind !== Kind.STRING) {
+      throw new TypeError(`Money cannot represent non-string type ${ast.kind}`);
+    }
+    const parsedValue = parseFloat(ast.value.replace(/^\$/, ''));
+    if (isNaN(parsedValue)) {
+      throw new TypeError(`Money cannot represent non-numeric value: ${ast.value}`);
+    }
+    return parsedValue.toFixed(2);
+  }
+});
 
 module.exports = currencyScalar

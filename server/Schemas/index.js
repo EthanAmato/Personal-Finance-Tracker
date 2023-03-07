@@ -57,12 +57,11 @@ const Mutation = new GraphQLObjectType({
                 current_balance: { type: currencyScalar },
             },
             resolve(parent, args) {
-                console.log(args.current_balance)
                 pool.query(
                     `INSERT INTO users (name, email, password, current_balance) VALUES
-                     (${args.name},${args.email},${args.password},${args.current_balance})`
+                     ('${args.name}','${args.email}','${args.password}',${args.current_balance})`
                 )
-                return args;
+                return args; 
             }
         }
     }
