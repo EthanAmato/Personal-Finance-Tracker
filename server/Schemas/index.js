@@ -2,8 +2,7 @@ const graphql = require('graphql');
 const UserType = require('./TypeDefs/UserType')
 //For each datatype in your data, you need to import the corresponding graphql equivalent
 const { GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLString, GraphQLList, GraphQLFloat, } = graphql
-const graphql_scalars = require('graphql-scalars');
-const {GraphQLCurrency} = graphql_scalars;
+const currencyScalar = require('./Scalars/currency')
 
 //Create connection with PostgresQL DB
 const Pool = require('pg').Pool;
@@ -55,9 +54,10 @@ const Mutation = new GraphQLObjectType({
                 name: { type: GraphQLString },
                 email: { type: GraphQLString },
                 password: { type: GraphQLString },
-                current_balance: { type: GraphQLCurrency },
+                current_balance: { type: currencyScalar },
             },
             resolve(parent, args) {
+                console.log(args.current_balance)
                 pool.query(
                     `INSERT INTO users (name, email, password, current_balance) VALUES
                      (${args.name},${args.email},${args.password},${args.current_balance})`

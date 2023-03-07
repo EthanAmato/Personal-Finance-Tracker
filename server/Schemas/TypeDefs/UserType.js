@@ -1,8 +1,7 @@
 const graphql = require('graphql');
 const { GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLFloat} = graphql
 const graphql_scalars = require('graphql-scalars');
-const {GraphQLCurrency} = graphql_scalars;
-
+const currencyScalar = require('../Scalars/currency')
 //All users in our data HAVE to follow this format
 const UserType = new GraphQLObjectType({
     name: "User",
@@ -12,7 +11,7 @@ const UserType = new GraphQLObjectType({
         name: { type: GraphQLString },
         email: { type: GraphQLString },
         password: { type: GraphQLString },
-        current_balance: { type: GraphQLCurrency },
+        current_balance: { type: currencyScalar },
     }) 
 
 })
