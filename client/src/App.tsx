@@ -5,7 +5,7 @@ import { ErrorResponse } from '@apollo/client/link/error';
 import { ApolloClient } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { Outlet, Route, Routes } from 'react-router-dom';
-import Login from './Login';
+import Login from './Components/Login';
 
 //function that tells program what to do if there are any errors
 const errorLink = onError(({ graphQLErrors, networkError }: ErrorResponse) => {
