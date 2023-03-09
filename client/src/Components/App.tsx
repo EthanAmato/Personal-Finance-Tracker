@@ -4,7 +4,8 @@ import { InMemoryCache, ApolloProvider, HttpLink, from } from "@apollo/client"
 import { ErrorResponse } from '@apollo/client/link/error';
 import { ApolloClient } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
-import { Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes } from 'react-router-dom';
+import Login from './Login';
 
 //function that tells program what to do if there are any errors
 const errorLink = onError(({ graphQLErrors, networkError }: ErrorResponse) => {
@@ -34,13 +35,12 @@ function App() {
     <ApolloProvider client={client}>
       <Routes>
         {/* <Layout /> */}
-        <Route path="/" element={<h1>Hi</h1>}>
-
+        <Route path="/" element={<Outlet/>}>
           {/* Home Page */}
           <Route index element={<h1>Hi</h1>} />
 
           {/* Login */}
-          <Route path='/login' element={<h1>Hi</h1>} />
+          <Route path='login' element={<Login/>} />
 
           {/* Registration */}
           <Route path='/register' element={<h1>Hi</h1>} />
