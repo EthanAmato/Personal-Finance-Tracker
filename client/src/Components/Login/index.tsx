@@ -1,15 +1,15 @@
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-
-import './style.scss'
+import { object, string, number, date, InferType } from 'yup';
 import AuthService from "../../services/auth.service";
+import './style.scss'
+import { Navigate } from 'react-router-dom';
 
 interface RouterProps {
     history: string;
 }
 
-type Props = RouteComponentProps<RouterProps>;
+type Props = {};
 
 type State = {
     username: string,
@@ -20,31 +20,33 @@ type State = {
 
 function Login(props: Props) {
 
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
-    const [loading, setLoading] = useState(false)
-    const [message, setMessage] = useState("")
+    const [username, setUsername] = useState<string>("")
+    const [password, setPassword] = useState<string>("")
+    const [loading, setLoading] = useState<boolean>(false)
+    const [message, setMessage] = useState<string>("")
+    const [redirect, setRedirect] = useState<string | undefined>();
+
 
     function validationSchema() {
-        return Yup.object().shape({
-            username: [Yup.Schema],
-            password: [Yup.Schema],
+        return object({
+            username: string().required("This field is required"),
+            password: string().required("This field is required")
         });
     }
 
     function handleLogin(formValue: { username: string, password: string }) {
         const { username, password } = formValue;
 
-        setMessage("")
-        setLoading(true)
-
+        () => {
+            setMessage("")
+            setLoading(true)
+        }
 
         AuthService.login(username, password).then(
             () => {
-                props.history.push("/profile");
-                window.location.reload();
+                setRedirect("/profile");
             },
-            (error:any) => {
+            (error: any) => {
                 const resMessage =
                     (error.response &&
                         error.response.data &&
@@ -64,31 +66,36 @@ function Login(props: Props) {
     };
 
     return (
-        <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleLogin}
-        >
-            <Form>
-                <div>
-                    <label htmlFor="username">Password</label>
-                    <Field name="username" type="text" />
-                    <ErrorMessage name="username" component="div" />
-                </div>
+        <>
+            {
+                redirect && <Navigate to={redirect} />
+            }
+            <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleLogin}
+            >
+                <Form>
+                    <div>
+                        <label htmlFor="username">Username</label>
+                        <Field name="username" type="text" />
+                        <ErrorMessage name="username" component="div" />
+                    </div>
 
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <Field name="password" type="password" />
-                    <ErrorMessage name="password" component="div" />
-                </div>
+                    <div>
+                        <label htmlFor="password">Password</label>
+                        <Field name="password" type="password" />
+                        <ErrorMessage name="password" component="div" />
+                    </div>
 
-                <div>
-                    <button type="submit" disabled={loading}>
-                        Login
-                    </button>
-                </div>
-            </Form>
-        </Formik>
+                    <div>
+                        <button type="submit" disabled={loading}>
+                            Login
+                        </button>
+                    </div>
+                </Form>
+            </Formik>
+        </>
     );
 }
 

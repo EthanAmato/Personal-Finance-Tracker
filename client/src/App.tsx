@@ -6,7 +6,8 @@ import { ApolloClient } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { Outlet, Route, Routes } from 'react-router-dom';
 import Login from './Components/Login';
-
+import Register from './Components/Register';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 //function that tells program what to do if there are any errors
 const errorLink = onError(({ graphQLErrors, networkError }: ErrorResponse) => {
   if (graphQLErrors) {
@@ -43,7 +44,7 @@ function App() {
           <Route path='login' element={<Login/>} />
 
           {/* Registration */}
-          <Route path='/register' element={<h1>Hi</h1>} />
+          <Route path='/register' element={<Register/>} />
 
           {/* Expense tracking: Users should be able to input and categorize their expenses, so they can keep track of their spending. */}
           <Route path="/add" element={<h1>Hi</h1>} />
