@@ -1,39 +1,13 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
-import { InMemoryCache, ApolloProvider, HttpLink, from } from "@apollo/client"
-import { ErrorResponse } from '@apollo/client/link/error';
-import { ApolloClient } from '@apollo/client';
-import { onError } from '@apollo/client/link/error';
 import { Outlet, Route, Routes } from 'react-router-dom';
 import Login from './Components/Login';
 import Register from './Components/Register';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
-//function that tells program what to do if there are any errors
-const errorLink = onError(({ graphQLErrors, networkError }: ErrorResponse) => {
-  if (graphQLErrors) {
-    graphQLErrors.map(({ message, path }) => {
-      alert(`GraphQL Error ${message} on path ${path}`)
-    });
-  }
-})
-//set up where to go/what to do if there are errors and, otherwise, where to find the graphql server
-const link = from([
-  errorLink,
-  new HttpLink({ uri: "http://localhost:5000/graphql" })
-])
-
-
-//To make ApolloClient in react, you need to create a connection with graphql at the topmost component
-const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  link: link
-})
-
 
 function App() {
 
   return (
-    <ApolloProvider client={client}>
       <Routes>
         {/* <Layout /> */}
         <Route path="/" element={<Outlet/>}>
@@ -61,7 +35,6 @@ function App() {
           <Route path="*" element={<h1>Error 404</h1>} />
         </Route>
       </Routes>
-    </ApolloProvider>
   )
 }
 
