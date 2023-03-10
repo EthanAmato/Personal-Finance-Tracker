@@ -3,7 +3,7 @@ import reactLogo from './assets/react.svg'
 import { InMemoryCache, ApolloProvider, HttpLink, from } from "@apollo/client"
 import { ErrorResponse } from '@apollo/client/link/error';
 import { ApolloClient } from '@apollo/client';
-import { onError } from '@apollo/client/link/error';
+import { onError } from '@apollo/client/link/error'; 
 import { Outlet, Route, Routes } from 'react-router-dom';
 import Login from './Login';
 
