@@ -17,16 +17,13 @@ type State = {
 
 function Register(props: Props) {
 
-    const [username, setUsername] = useState<string>("")
-    const [email, setEmail] = useState<string>("")
-    const [password, setPassword] = useState<string>("")
     const [successful, setSuccessful] = useState<boolean>(false)
     const [message, setMessage] = useState<string>("")
     const initialValues = {
         username: "",
         email: "",
         password: "",
-        balance: 0
+        balance: "0"
     };
     function validationSchema() {
         return object({
@@ -61,15 +58,16 @@ function Register(props: Props) {
                 ">=0",
                 "Your balance must be a positive number",
                 (val: any) => {
+                    
                     return (
-                        (val && val >= 0.00)
+                        (val && parseFloat(val) >= 0.00)
                     )
                 }
             ).default(0.00)
         })
     }
 
-    function handleRegister(formValue: { username: string; email: string; password: string; balance: number }) {
+    function handleRegister(formValue: { username: string; email: string; password: string; balance: string }) {
         const { username, email, password, balance } = formValue;
 
         () => {
@@ -81,7 +79,7 @@ function Register(props: Props) {
             username,
             email,
             password,
-            balance
+            parseFloat(balance) //cast to float bc that's what backend needs
         ).then((res) => {
             setMessage(res.data.message);
             setSuccessful(true);
